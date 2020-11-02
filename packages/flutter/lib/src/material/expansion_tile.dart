@@ -40,6 +40,7 @@ class ExpansionTile extends StatefulWidget {
     this.onExpansionChanged,
     this.children = const <Widget>[],
     this.trailing,
+    this.rotateTrailing,
     this.initiallyExpanded = false,
     this.maintainState = false,
     this.tilePadding,
@@ -85,8 +86,13 @@ class ExpansionTile extends StatefulWidget {
   /// The color to display behind the sublist when expanded.
   final Color? backgroundColor;
 
-  /// A widget to display instead of a rotating arrow icon.
+  /// A widget to display instead of an arrow icon.
   final Widget? trailing;
+
+  /// Specifies if the trailing should rotate (true) or not (false).
+  ///
+  /// When the value is null the trailing will rotate, unless a custom [trailing] is passed.
+  final bool? rotateTrailing;
 
   /// Specifies if the list tile is initially expanded (true) or collapsed (false, the default).
   final bool initiallyExpanded;
@@ -212,6 +218,8 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
+    final Widget trailing = widget.trailing ?? const Icon(Icons.expand_more);
+    final bool rotateTrailing = widget.rotateTrailing ?? widget.trailing == null;
 
     return Container(
       decoration: BoxDecoration(
@@ -233,10 +241,10 @@ class _ExpansionTileState extends State<ExpansionTile> with SingleTickerProvider
               leading: widget.leading,
               title: widget.title,
               subtitle: widget.subtitle,
-              trailing: widget.trailing ?? RotationTransition(
+              trailing: rotateTrailing ? RotationTransition(
                 turns: _iconTurns,
-                child: const Icon(Icons.expand_more),
-              ),
+                child: trailing,
+              ) : trailing,
             ),
           ),
           ClipRect(
