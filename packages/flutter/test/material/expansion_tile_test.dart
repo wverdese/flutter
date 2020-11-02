@@ -481,4 +481,42 @@ void main() {
     expect(columnRect.bottom, paddingRect.bottom - 4);
   });
 
+  testWidgets('ExpansionTile default trailing default rotation', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: SingleChildScrollView(
+          child: Column(
+            children: const <Widget>[
+              ExpansionTile(
+                title: Text('default trailing => will rotate'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+
+    expect(find.byType(RotationTransition), findsOneWidget);
+  });
+
+  final Key customIconKey = UniqueKey();
+
+  testWidgets('ExpansionTile custom trailing default rotation', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: Material(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              ExpansionTile(
+                title: const Text('custom trailing => won\t rotate'),
+                trailing: TestIcon(key: customIconKey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+
+    expect(find.byType(RotationTransition), findsNothing);
+  });
 }
